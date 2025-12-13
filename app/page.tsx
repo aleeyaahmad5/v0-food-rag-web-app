@@ -42,7 +42,7 @@ const exampleQuestions = [
   const [lastResponseTime, setLastResponseTime] = useState<number | undefined>()
   const [chats, setChats] = useState<ChatSession[]>([])
   const [currentChatId, setCurrentChatId] = useState<string | null>(null)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -296,27 +296,38 @@ const exampleQuestions = [
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
       <ParticleBackground />
       <KeyboardShortcuts onNewChat={handleNewChat} onFocusInput={handleFocusInput} />
 
-      {/* Sidebar as a flex child, never overlaps */}
-      <ChatHistory
-        currentChatId={currentChatId}
-        onSelectChat={handleSelectChat}
-        onNewChat={handleNewChat}
-        onDeleteChat={handleDeleteChat}
-        chats={chats}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-      />
+      {/* Sidebar overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          <div className="w-72 min-h-screen flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 shadow-xl animate-slide-right">
+            <ChatHistory
+              currentChatId={currentChatId}
+              onSelectChat={handleSelectChat}
+              onNewChat={handleNewChat}
+              onDeleteChat={handleDeleteChat}
+              chats={chats}
+              collapsed={false}
+              setCollapsed={() => setSidebarOpen(false)}
+            />
+          </div>
+          {/* Backdrop */}
+          <div className="flex-1 bg-black/30" onClick={() => setSidebarOpen(false)} />
+        </div>
+      )}
 
-      {/* Main content always beside sidebar */}
+      {/* Main content */}
       <div className="flex flex-col flex-1 min-w-0">
-        <Header onClearChat={handleClearChat} messageCount={messages.length} messages={messages} />
-        <main
-          className={`flex-1 w-full max-w-3xl px-4 py-8 relative z-10 transition-all ${sidebarCollapsed ? 'ml-16' : 'ml-72'}`}
-        >
+        <Header
+          onClearChat={handleClearChat}
+          messageCount={messages.length}
+          messages={messages}
+          onOpenSidebar={() => setSidebarOpen(true)}
+        />
+        <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all">
           {/* ...existing code... */}
         </main>
         {/* ...existing code... */}
