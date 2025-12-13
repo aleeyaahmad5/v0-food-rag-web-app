@@ -314,7 +314,9 @@ const exampleQuestions = [
       {/* Main content always beside sidebar */}
       <div className="flex flex-col flex-1 min-w-0">
         <Header onClearChat={handleClearChat} messageCount={messages.length} messages={messages} />
-        <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all">
+        <main
+          className={`flex-1 w-full max-w-3xl px-4 py-8 relative z-10 transition-all ${sidebarCollapsed ? 'ml-16' : 'ml-72'}`}
+        >
           {/* ...existing code... */}
         </main>
         {/* ...existing code... */}
