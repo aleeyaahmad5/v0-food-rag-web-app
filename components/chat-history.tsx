@@ -61,50 +61,47 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
 
   if (isCollapsed) {
     return (
-      <div className="fixed left-0 top-0 h-full z-40 flex">
-        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 p-2 flex flex-col items-center gap-2 shadow-lg">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsCollapsed(false)}
-            className="h-10 w-10 text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-            title="Open chat history"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onNewChat}
-            className="h-10 w-10 text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-            title="New chat"
-          >
-            <Plus className="w-5 h-5" />
-          </Button>
-          <div className="flex-1 flex flex-col gap-1 overflow-y-auto py-2">
-            {chats.slice(0, 10).map((chat) => (
-              <button
-                key={chat.id}
-                onClick={() => onSelectChat(chat)}
-                className={`h-10 w-10 rounded-lg flex items-center justify-center transition-all ${
-                  currentChatId === chat.id
-                    ? "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400"
-                    : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-                }`}
-                title={chat.title}
-              >
-                <MessageSquare className="w-4 h-4" />
-              </button>
-            ))}
-          </div>
+      <div className="w-16 min-h-screen flex flex-col items-center bg-white/95 dark:bg-slate-900/95 border-r border-slate-200 dark:border-slate-700 p-2 gap-2 shadow-lg">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsCollapsed(false)}
+          className="h-10 w-10 text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+          title="Open chat history"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onNewChat}
+          className="h-10 w-10 text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+          title="New chat"
+        >
+          <Plus className="w-5 h-5" />
+        </Button>
+        <div className="flex-1 flex flex-col gap-1 overflow-y-auto py-2">
+          {chats.slice(0, 10).map((chat) => (
+            <button
+              key={chat.id}
+              onClick={() => onSelectChat(chat)}
+              className={`h-10 w-10 rounded-lg flex items-center justify-center transition-all ${
+                currentChatId === chat.id
+                  ? "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400"
+                  : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              }`}
+              title={chat.title}
+            >
+              <MessageSquare className="w-4 h-4" />
+            </button>
+          ))}
         </div>
       </div>
     )
   }
 
   return (
-    <div className="fixed left-0 top-0 h-full z-40 flex">
-      <div className="w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 flex flex-col shadow-xl animate-slide-right">
+    <div className="w-72 min-h-screen flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 shadow-xl animate-slide-right">
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
@@ -212,7 +209,7 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
       {/* Backdrop for mobile */}
       {isMobile && (
         <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm -z-10"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
           onClick={() => setIsCollapsed(true)}
         />
       )}
