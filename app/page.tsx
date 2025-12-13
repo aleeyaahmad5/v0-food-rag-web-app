@@ -310,7 +310,7 @@ export default function Home() {
       
       <Header onClearChat={handleClearChat} messageCount={messages.length} messages={messages} />
 
-      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 md:ml-16 lg:ml-16 transition-all">
+      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all">
         {/* Stats Bar */}
         <StatsBar 
           responseTime={lastResponseTime} 
