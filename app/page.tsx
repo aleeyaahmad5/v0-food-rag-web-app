@@ -331,11 +331,12 @@ export default function Home() {
       {/* Shift main content if sidebar is open and not mobile */}
       <main
         className={
-          `flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all` +
+          `flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative transition-all` +
           (sidebarOpen && !isMobile ? ' ml-72' : '')
         }
         style={{
-          marginLeft: sidebarOpen && !isMobile ? 288 : undefined
+          marginLeft: sidebarOpen && !isMobile ? 288 : undefined,
+          zIndex: 0
         }}
       >
         {/* Stats Bar */}

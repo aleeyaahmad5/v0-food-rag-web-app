@@ -58,7 +58,7 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
 
   if (!sidebarOpen) {
     return (
-      <div className="fixed left-0 top-0 h-full z-30 flex">
+      <div className="fixed left-0 top-0 h-full z-[60] flex">
         <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 p-2 flex flex-col items-center gap-2 shadow-lg">
           <Button
             variant="ghost"
@@ -105,12 +105,12 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
       {/* Overlay for mobile only */}
       {isMobile && (
         <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[59]"
           onClick={() => setSidebarOpen && setSidebarOpen(false)}
         />
       )}
-      <div className={`fixed left-0 top-0 h-full z-30 flex ${isMobile ? '' : ''}`} style={{ width: isMobile ? '100vw' : 'auto' }}>
-        <div className="w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 flex flex-col shadow-xl animate-slide-right">
+      <div className={`fixed left-0 top-0 h-full z-[60] flex ${isMobile ? '' : ''}`} style={{ width: isMobile ? '100vw' : 'auto', pointerEvents: 'auto' }}>
+        <div className="w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 flex flex-col shadow-xl animate-slide-right" style={{ pointerEvents: 'auto' }}>
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
