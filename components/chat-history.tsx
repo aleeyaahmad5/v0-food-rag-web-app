@@ -28,7 +28,7 @@ interface ChatHistoryProps {
 }
 
 export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteChat, chats }: ChatHistoryProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
