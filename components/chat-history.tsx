@@ -25,15 +25,18 @@ interface ChatHistoryProps {
   onNewChat: () => void
   onDeleteChat: (chatId: string) => void
   chats: ChatSession[]
-  sidebarOpen?: boolean
-  setSidebarOpen?: (open: boolean) => void
 }
 
-export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteChat, chats, sidebarOpen, setSidebarOpen }: ChatHistoryProps) {
+export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteChat, chats }: ChatHistoryProps) {
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
+      setIsMobile(window.innerWidth < 768)
+      if (window.innerWidth < 768) {
+        setIsCollapsed(true)
+      }
     }
     checkMobile()
     window.addEventListener("resize", checkMobile)
@@ -56,14 +59,14 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
     return title.slice(0, maxLength) + "..."
   }
 
-  if (!sidebarOpen) {
+  if (isCollapsed) {
     return (
-      <div className="fixed left-0 top-0 h-full z-[60] flex">
+      <div className="fixed left-0 top-0 h-full z-40 flex">
         <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 p-2 flex flex-col items-center gap-2 shadow-lg">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSidebarOpen && setSidebarOpen(true)}
+            onClick={() => setIsCollapsed(false)}
             className="h-10 w-10 text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
             title="Open chat history"
           >
@@ -99,18 +102,9 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
     )
   }
 
-  // Sidebar open
   return (
-    <>
-      {/* Overlay for mobile only */}
-      {isMobile && (
-        <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[59]"
-          onClick={() => setSidebarOpen && setSidebarOpen(false)}
-        />
-      )}
-      <div className={`fixed left-0 top-0 h-full z-[60] flex ${isMobile ? '' : ''}`} style={{ width: isMobile ? '100vw' : 'auto', pointerEvents: 'auto' }}>
-        <div className="w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 flex flex-col shadow-xl animate-slide-right" style={{ pointerEvents: 'auto' }}>
+    <div className="fixed left-0 top-0 h-full z-40 flex">
+      <div className="w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 flex flex-col shadow-xl animate-slide-right">
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
@@ -118,7 +112,7 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setSidebarOpen && setSidebarOpen(false)}
+              onClick={() => setIsCollapsed(true)}
               className="h-8 w-8 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
             >
               <ChevronLeft className="w-4 h-4" />

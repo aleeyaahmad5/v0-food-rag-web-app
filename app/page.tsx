@@ -13,20 +13,6 @@ import { ParticleBackground } from "@/components/particle-background"
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts"
 import { StatsBar } from "@/components/stats-bar"
 import { ChatHistory, ChatSession } from "@/components/chat-history"
-// Track sidebar open state for layout shift
-function useSidebarState() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
-    }
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
-  return { sidebarOpen, setSidebarOpen, isMobile }
-}
 import { SendIcon, Sparkles, ChefHat, Salad, Apple, Flame, Mic, MicOff } from "lucide-react"
 
 interface Message {
@@ -48,7 +34,6 @@ const exampleQuestions = [
 ]
 
 export default function Home() {
-  const { sidebarOpen, setSidebarOpen, isMobile } = useSidebarState()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -313,32 +298,19 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
       <ParticleBackground />
       <KeyboardShortcuts onNewChat={handleNewChat} onFocusInput={handleFocusInput} />
-
+      
       {/* Chat History Sidebar */}
-
       <ChatHistory
         currentChatId={currentChatId}
         onSelectChat={handleSelectChat}
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
         chats={chats}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
       />
-
+      
       <Header onClearChat={handleClearChat} messageCount={messages.length} messages={messages} />
 
-      {/* Shift main content if sidebar is open and not mobile */}
-      <main
-        className={
-          `flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative transition-all` +
-          (sidebarOpen && !isMobile ? ' ml-72' : '')
-        }
-        style={{
-          marginLeft: sidebarOpen && !isMobile ? 288 : undefined,
-          zIndex: 0
-        }}
-      >
+      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all">
         {/* Stats Bar */}
         <StatsBar 
           responseTime={lastResponseTime} 
