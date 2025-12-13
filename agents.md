@@ -4,7 +4,43 @@
 
 ---
 
-## 📋 Project Summary
+## � Project Documentation & Config Files
+
+| File | Type | Summary |
+|------|------|---------|
+| [`README.md`](README.md) | 📖 Documentation | Portfolio-ready project overview with badges, features, tech stack, installation guide, keyboard shortcuts, and architecture diagram |
+| [`agents.md`](agents.md) | 🤖 AI Instructions | This file - technical documentation for AI agents with architecture, patterns, and coding guidelines |
+| [`package.json`](package.json) | 📦 Dependencies | npm/pnpm config with all dependencies (React 19, Next.js 16, Tailwind 4, Upstash, Groq, Radix UI, Lucide icons) and scripts (`dev`, `build`, `lint`, `start`) |
+| [`tsconfig.json`](tsconfig.json) | ⚙️ TypeScript | Strict TypeScript config with ES6 target, path aliases (`@/*`), JSX support, and Next.js plugin |
+| [`next.config.mjs`](next.config.mjs) | ⚙️ Next.js | Next.js config with `ignoreBuildErrors: true` for TypeScript and unoptimized images |
+| [`postcss.config.mjs`](postcss.config.mjs) | 🎨 PostCSS | PostCSS config using `@tailwindcss/postcss` plugin for Tailwind 4 |
+| [`components.json`](components.json) | 🧩 shadcn/ui | shadcn/ui config: New York style, RSC enabled, TypeScript, Tailwind with CSS variables, Lucide icons, path aliases |
+| [`.env.example`](.env.example) | 🔐 Environment | Template for environment variables with detailed comments for Upstash Vector DB, Groq API, and optional configs |
+| [`.gitignore`](.gitignore) | 🚫 Git | Files/folders to exclude from version control (node_modules, .next, .env, etc.) |
+
+### Quick Reference: What Each Config Controls
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    CONFIGURATION HIERARCHY                       │
+├─────────────────────────────────────────────────────────────────┤
+│  package.json         → Dependencies, scripts, project metadata │
+│  ├── tsconfig.json    → TypeScript compiler settings            │
+│  ├── next.config.mjs  → Next.js framework settings              │
+│  ├── postcss.config   → CSS processing (Tailwind)               │
+│  └── components.json  → shadcn/ui component generation          │
+│                                                                  │
+│  .env.example         → Environment variable template            │
+│  .env.local           → Actual secrets (NEVER commit!)          │
+│                                                                  │
+│  README.md            → Human documentation                      │
+│  agents.md            → AI agent documentation                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## �📋 Project Summary
 
 **Food RAG** is a Next.js web application that implements **Retrieval-Augmented Generation (RAG)** for answering food-related questions. It combines vector similarity search (Upstash) with LLM generation (Groq) to provide accurate, sourced responses.
 
