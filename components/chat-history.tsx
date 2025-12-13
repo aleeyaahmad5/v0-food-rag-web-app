@@ -25,10 +25,11 @@ interface ChatHistoryProps {
   onNewChat: () => void
   onDeleteChat: (chatId: string) => void
   chats: ChatSession[]
+  collapsed: boolean
+  setCollapsed: (collapsed: boolean) => void
 }
 
-export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteChat, chats }: ChatHistoryProps) {
-  const [isCollapsed, setIsCollapsed] = useState(true)
+export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteChat, chats, collapsed, setCollapsed }: ChatHistoryProps) {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -59,13 +60,13 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
     return title.slice(0, maxLength) + "..."
   }
 
-  if (isCollapsed) {
+  if (collapsed) {
     return (
       <div className="w-16 min-h-screen flex flex-col items-center bg-white/95 dark:bg-slate-900/95 border-r border-slate-200 dark:border-slate-700 p-2 gap-2 shadow-lg">
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setIsCollapsed(false)}
+          onClick={() => setCollapsed(false)}
           className="h-10 w-10 text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
           title="Open chat history"
         >
