@@ -298,7 +298,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
       <ParticleBackground />
       <KeyboardShortcuts onNewChat={handleNewChat} onFocusInput={handleFocusInput} />
-      
+
       {/* Chat History Sidebar */}
       <ChatHistory
         currentChatId={currentChatId}
@@ -307,10 +307,19 @@ export default function Home() {
         onDeleteChat={handleDeleteChat}
         chats={chats}
       />
-      
+
       <Header onClearChat={handleClearChat} messageCount={messages.length} messages={messages} />
 
-      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all">
+      {/* Add left margin to main when sidebar is open on desktop */}
+      <main
+        className={
+          `flex-1 w-full max-w-3xl mx-auto px-4 py-8 relative z-10 transition-all ` +
+          `lg:ml-72` // 288px = sidebar width
+        }
+        style={{
+          marginLeft: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 288 : undefined
+        }}
+      >
         {/* Stats Bar */}
         <StatsBar 
           responseTime={lastResponseTime} 

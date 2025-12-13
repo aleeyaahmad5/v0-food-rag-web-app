@@ -61,7 +61,7 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
 
   if (isCollapsed) {
     return (
-      <div className="fixed left-0 top-0 h-full z-40 flex">
+      <div className="fixed left-0 top-0 h-full z-30 flex">
         <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 p-2 flex flex-col items-center gap-2 shadow-lg">
           <Button
             variant="ghost"
@@ -103,7 +103,7 @@ export function ChatHistory({ currentChatId, onSelectChat, onNewChat, onDeleteCh
   }
 
   return (
-    <div className="fixed left-0 top-0 h-full z-40 flex">
+    <div className="fixed left-0 top-0 h-full z-30 flex">
       <div className="w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200 dark:border-slate-700 flex flex-col shadow-xl animate-slide-right">
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-700">

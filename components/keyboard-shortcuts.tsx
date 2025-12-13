@@ -54,8 +54,9 @@ export function KeyboardShortcuts({ onNewChat, onFocusInput }: KeyboardShortcuts
     <>
       <button
         onClick={() => setShowHelp(true)}
-        className="fixed bottom-24 right-4 p-3 bg-white dark:bg-slate-800 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-blue-500 hover:border-blue-300 transition-all hover:scale-110 z-40"
+        className="fixed bottom-6 right-6 p-3 bg-white dark:bg-slate-800 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-blue-500 hover:border-blue-300 transition-all hover:scale-110 z-20"
         title="Keyboard shortcuts (?)"
+        style={{ pointerEvents: 'auto' }}
       >
         <Keyboard className="w-5 h-5" />
       </button>
