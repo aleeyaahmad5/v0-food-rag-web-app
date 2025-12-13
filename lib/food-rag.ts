@@ -1,18 +1,18 @@
 // lib/food-rag.ts
-// Shared logic for Food RAG - used by both MCP server and web API
+// Shared RAG logic for both web API and MCP server
 
 import { z } from "zod"
 import { Index } from "@upstash/vector"
 import { Groq } from "groq-sdk"
 
 // ============================================================================
-// SCHEMAS
+// TYPES
 // ============================================================================
 
 export const searchQuerySchema = z.object({
-  query: z.string().min(1).max(500).describe("The food-related question to search for"),
-  topK: z.number().int().min(1).max(10).default(3).describe("Number of results to return"),
-  includeAnswer: z.boolean().default(true).describe("Whether to generate an AI answer")
+  query: z.string().min(1).max(500),
+  topK: z.number().int().min(1).max(10).default(3),
+  includeAnswer: z.boolean().default(true),
 })
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>
@@ -30,7 +30,7 @@ export interface SearchResult {
 }
 
 // ============================================================================
-// CLIENTS (lazy initialization)
+// CLIENTS (lazy init)
 // ============================================================================
 
 let vectorIndex: Index | null = null
@@ -54,9 +54,7 @@ function getGroqClient(): Groq {
     if (!process.env.GROQ_API_KEY) {
       throw new Error("Missing GROQ_API_KEY environment variable")
     }
-    groqClient = new Groq({
-      apiKey: process.env.GROQ_API_KEY,
-    })
+    groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY })
   }
   return groqClient
 }
@@ -75,102 +73,72 @@ interface VectorMetadata {
 }
 
 /**
- * Search the food knowledge base
+ * Search the food knowledge base and optionally generate an AI answer
  */
 export async function searchFoodKnowledge(params: SearchQuery): Promise<SearchResult> {
   const { query, topK, includeAnswer } = searchQuerySchema.parse(params)
-  
-  const index = getVectorIndex()
-  
-  // 1. Query vector database
-  const results = await index.query<VectorMetadata>({
+
+  // 1. Vector search
+  const results = await getVectorIndex().query<VectorMetadata>({
     data: query,
     topK,
     includeMetadata: true,
   })
-  
+
   // 2. Format sources
   const sources: Source[] = results
-    .map((result) => {
-      const metadata = result.metadata as VectorMetadata | undefined
-      return {
-        title: metadata?.title || metadata?.type || "Food Knowledge",
-        content: metadata?.original_text || metadata?.text || "",
-        score: result.score || 0,
-        region: metadata?.region,
-      }
-    })
-    .filter((source) => source.content)
-  
+    .map((r) => ({
+      title: r.metadata?.title || r.metadata?.type || "Food Knowledge",
+      content: r.metadata?.original_text || r.metadata?.text || "",
+      score: r.score || 0,
+      region: r.metadata?.region,
+    }))
+    .filter((s) => s.content)
+
   // 3. Generate AI answer if requested
   let answer: string | undefined
-  
+
   if (includeAnswer && sources.length > 0) {
-    const groq = getGroqClient()
-    const context = sources.map(s => s.content).join("\n\n")
-    
-    const prompt = `You are a helpful food knowledge assistant. Use the following context to answer the user's question about food, ingredients, or culinary topics. If the information is not in the context, say you don't have enough information to answer accurately.
+    const context = sources.map((s) => s.content).join("\n\n")
 
-Context:
-${context}
-
-Question: ${query}
-
-Answer: Provide a clear, helpful answer based on the context provided.`
-
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroqClient().chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
         {
           role: "user",
-          content: prompt,
+          content: `You are a helpful food knowledge assistant. Answer based on this context:
+
+${context}
+
+Question: ${query}
+
+Provide a clear, helpful answer. If the context doesn't have the info, say so.`,
         },
       ],
       temperature: 0.7,
       max_completion_tokens: 1024,
     })
-    
-    answer = completion.choices[0]?.message?.content?.trim() || undefined
+
+    answer = completion.choices[0]?.message?.content?.trim()
   }
-  
+
   return { answer, sources }
 }
 
 /**
- * List available food topics/categories
+ * List available food topics
  */
 export async function listFoodTopics(): Promise<string[]> {
-  // Predefined topics based on the knowledge base
   return [
-    "Recipes & Cooking Techniques",
-    "Nutrition & Health Benefits",
-    "Food Science & Chemistry",
-    "World Cuisines & Culture",
+    "Recipes & Cooking",
+    "Nutrition & Health",
+    "World Cuisines",
     "Ingredients & Substitutions",
-    "Dietary Restrictions & Allergies",
-    "Food Safety & Storage",
-    "Kitchen Tips & Equipment",
-    "Meal Planning & Prep",
-    "Baking & Pastry"
+    "Dietary Restrictions",
+    "Food Safety",
+    "Kitchen Tips",
+    "Meal Planning",
+    "Baking & Pastry",
+    "Food Science",
   ]
 }
-
-// ============================================================================
-// TOOL DEFINITIONS (for MCP)
-// ============================================================================
-
-export const searchFoodTool = {
-  name: "search_food_knowledge",
-  description: "Search the food knowledge base for recipes, nutrition info, cooking tips, and culinary information. Returns relevant sources and an AI-generated answer based on the retrieved context.",
-  schema: {
-    query: z.string().min(1).max(500).describe("The food-related question to search for"),
-    topK: z.number().int().min(1).max(10).default(3).optional().describe("Number of results to return (1-10, default: 3)"),
-    includeAnswer: z.boolean().default(true).optional().describe("Whether to generate an AI answer (default: true)"),
-  }
-} as const
-
-export const listTopicsTool = {
-  name: "list_food_topics", 
-  description: "List available food topics and categories in the knowledge base. Use this to see what kinds of food-related questions can be answered.",
-  schema: {}
-} as const

@@ -1,120 +1,63 @@
 // app/api/mcp/[transport]/route.ts
-// MCP Server endpoint for Claude Desktop integration
+// MCP Server for Claude Desktop / VS Code Copilot integration
 
 import { createMcpHandler } from "mcp-handler"
-import { 
-  searchFoodKnowledge, 
-  listFoodTopics,
-  searchFoodTool,
-  listTopicsTool 
-} from "@/lib/food-rag"
+import { z } from "zod"
+import { searchFoodKnowledge, listFoodTopics } from "@/lib/food-rag"
 
 const handler = createMcpHandler(
   (server) => {
-    // ========================================================================
-    // Tool: search_food_knowledge
-    // ========================================================================
+    // Tool: search_food_knowledge - Main RAG search
     server.tool(
-      searchFoodTool.name,
-      searchFoodTool.description,
-      searchFoodTool.schema,
-      async ({ query, topK = 3, includeAnswer = true }) => {
+      "search_food_knowledge",
+      "Search the food knowledge base for recipes, nutrition, cooking tips. Returns sources with AI-generated answer.",
+      {
+        query: z.string().min(1).max(500).describe("Food-related question"),
+        topK: z.number().min(1).max(10).default(3).optional().describe("Number of results (default: 3)"),
+      },
+      async ({ query, topK = 3 }) => {
         try {
-          const result = await searchFoodKnowledge({ 
-            query: query as string, 
-            topK: (topK as number) || 3, 
-            includeAnswer: (includeAnswer as boolean) ?? true 
+          const result = await searchFoodKnowledge({
+            query: String(query),
+            topK: Number(topK) || 3,
+            includeAnswer: true,
           })
-          
-          // Format response for MCP
-          let responseText = ""
-          
-          if (result.answer) {
-            responseText += `## Answer\n\n${result.answer}\n\n`
-          }
-          
+
+          let text = result.answer ? `## Answer\n\n${result.answer}\n\n` : ""
+
           if (result.sources.length > 0) {
-            responseText += `## Sources (${result.sources.length} found)\n\n`
-            result.sources.forEach((source, i) => {
-              const relevancePercent = (source.score * 100).toFixed(1)
-              responseText += `### ${i + 1}. ${source.title}\n`
-              responseText += `**Relevance:** ${relevancePercent}%`
-              if (source.region) {
-                responseText += ` | **Region:** ${source.region}`
-              }
-              responseText += `\n\n${source.content}\n\n---\n\n`
+            text += `## Sources\n\n`
+            result.sources.forEach((s, i) => {
+              text += `**${i + 1}. ${s.title}** (${(s.score * 100).toFixed(0)}% match)\n${s.content}\n\n`
             })
           } else {
-            responseText = "No relevant information found in the food knowledge base. Try rephrasing your question or asking about a different food topic."
+            text = "No relevant information found. Try a different food-related question."
           }
-          
-          return {
-            content: [{
-              type: "text" as const,
-              text: responseText
-            }]
-          }
+
+          return { content: [{ type: "text" as const, text }] }
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
           return {
-            content: [{
-              type: "text" as const,
-              text: `❌ Error searching food knowledge: ${errorMessage}`
-            }],
-            isError: true
+            content: [{ type: "text" as const, text: `Error: ${error instanceof Error ? error.message : "Search failed"}` }],
+            isError: true,
           }
         }
       }
     )
-    
-    // ========================================================================
-    // Tool: list_food_topics
-    // ========================================================================
+
+    // Tool: list_food_topics - Discovery tool
     server.tool(
-      listTopicsTool.name,
-      listTopicsTool.description,
-      listTopicsTool.schema,
+      "list_food_topics",
+      "List available food topics in the knowledge base.",
+      {},
       async () => {
-        try {
-          const topics = await listFoodTopics()
-          
-          let responseText = `## Available Food Topics\n\n`
-          responseText += `The Food RAG knowledge base can answer questions about:\n\n`
-          topics.forEach((topic, i) => {
-            responseText += `${i + 1}. **${topic}**\n`
-          })
-          responseText += `\n---\n\n`
-          responseText += `💡 **Tip:** Use the \`search_food_knowledge\` tool with a specific question to get detailed answers with sources.`
-          
-          return {
-            content: [{
-              type: "text" as const,
-              text: responseText
-            }]
-          }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
-          return {
-            content: [{
-              type: "text" as const,
-              text: `❌ Error listing topics: ${errorMessage}`
-            }],
-            isError: true
-          }
-        }
+        const topics = await listFoodTopics()
+        const text = `## Food Topics\n\n${topics.map((t, i) => `${i + 1}. ${t}`).join("\n")}\n\n💡 Use \`search_food_knowledge\` to ask questions.`
+        return { content: [{ type: "text" as const, text }] }
       }
     )
   },
-  {
-    // Server options (empty - mcp-handler uses defaults)
-  },
-  {
-    // Handler options
-    basePath: "/api/mcp",
-    maxDuration: 60,
-    verboseLogs: process.env.NODE_ENV === "development",
-  }
+  {},
+  { basePath: "/api/mcp", maxDuration: 60 }
 )
 
-// Export handlers for Next.js App Router
 export { handler as GET, handler as POST }
