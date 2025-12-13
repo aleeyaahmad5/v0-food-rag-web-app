@@ -17,6 +17,7 @@
 | [`components.json`](components.json) | 🧩 shadcn/ui | shadcn/ui config: New York style, RSC enabled, TypeScript, Tailwind with CSS variables, Lucide icons, path aliases |
 | [`.env.example`](.env.example) | 🔐 Environment | Template for environment variables with detailed comments for Upstash Vector DB, Groq API, and optional configs |
 | [`.gitignore`](.gitignore) | 🚫 Git | Files/folders to exclude from version control (node_modules, .next, .env, etc.) |
+| [`docs/MCP_DESIGN.md`](docs/MCP_DESIGN.md) | 🔌 MCP Design | Comprehensive design document for building an MCP server to expose vector search to Claude Desktop |
 
 ### Quick Reference: What Each Config Controls
 
