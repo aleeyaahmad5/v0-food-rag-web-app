@@ -427,7 +427,7 @@ export default function Home() {
             </Button>
           </form>
           <p className="text-xs text-center text-slate-400 mt-2">
-            Press <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs font-mono mx-1">Enter</kbd> to send ΓÇó <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs font-mono mx-1">Ctrl+K</kbd> to focus
+            Press <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs font-mono mx-1">Enter</kbd> to send • <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs font-mono mx-1">Ctrl+K</kbd> to focus
           </p>
         </div>
       </div>
