@@ -336,19 +336,19 @@ export default function Home() {
             {/* Feature badges */}
             <div className="flex flex-wrap justify-center gap-2">
               <span className="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full">
-                ≡ƒÆ¼ Chat History
+                Chat History
               </span>
               <span className="px-3 py-1 text-xs font-medium bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full">
-                ≡ƒÄñ Voice Input
+                Voice Input
               </span>
               <span className="px-3 py-1 text-xs font-medium bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-full">
-                Γî¿∩╕Å Keyboard Shortcuts
+                Keyboard Shortcuts
               </span>
               <span className="px-3 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-full">
-                ≡ƒôñ Export Chat
+                Export Chat
               </span>
               <span className="px-3 py-1 text-xs font-medium bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 rounded-full">
-                ≡ƒîÖ Dark Mode
+                Dark Mode
               </span>
             </div>
 
@@ -373,7 +373,7 @@ export default function Home() {
             {/* Quick tip */}
             <div className="text-center">
               <p className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 inline-block px-4 py-2 rounded-full">
-                ≡ƒÆí Tip: Press <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded text-xs font-mono mx-1">?</kbd> for keyboard shortcuts
+                Tip: Press <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded text-xs font-mono mx-1">?</kbd> for keyboard shortcuts
               </p>
             </div>
           </div>
